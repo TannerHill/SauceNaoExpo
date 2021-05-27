@@ -1,0 +1,11 @@
+{
+    "search": {
+        "SEARCH_BY_URL": "SEARCH_BY_URL",
+        "SEARCH_BY_FILE": "SEARCH_BY_FILE",
+        "SET_RESULTS": "SET_RESULTS"
+    },
+    "error": {
+        "SET_ERROR": "SET_ERROR",
+        "DISMISS_ERROR": "DISMISS_ERROR"
+    }
+}
