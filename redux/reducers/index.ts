@@ -1,8 +1,13 @@
-import { combineReducers } from "redux";
-import SearchReducer from "./search";
-import ErrorReducer from "./error";
+import { combineReducers, Reducer } from "redux";
+import SearchReducer, { SearchState } from "./search";
+import ErrorReducer, { ErrorState } from "./error";
 
-const rootReducer = combineReducers({
+export interface AppState {
+    search : SearchState,
+    error : ErrorState
+}
+
+const rootReducer : Reducer<AppState> = combineReducers({
     search: SearchReducer,
     error: ErrorReducer
 });

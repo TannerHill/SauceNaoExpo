@@ -8,7 +8,7 @@ interface SearchResponseHeader {
 }
 
 interface SearchResult {
-    header: SearchResultData;
+    header: SearchResultHeader;
     data: SearchResultData;
 }
 
@@ -16,6 +16,7 @@ interface SearchResultHeader {
     similarity: string;
     thumbnail: string;
     index_name: string;
+    index_id: number
 }
 
 interface SearchResultData {

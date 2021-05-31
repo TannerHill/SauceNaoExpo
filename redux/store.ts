@@ -1,7 +1,14 @@
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import RootReducer from './reducers';
+import RootReducer, { AppState } from './reducers';
 
 const middleware = [thunk];
 
-export default createStore(RootReducer, {}, applyMiddleware(...middleware));
+const initialState : AppState = {
+    search: {
+        results: []
+    },
+    error: {}
+}
+
+export default createStore(RootReducer, initialState, applyMiddleware(...middleware));

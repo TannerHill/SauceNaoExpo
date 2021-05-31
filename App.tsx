@@ -7,9 +7,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as StoreProvider } from 'react-redux';
 import * as Routes from './navigation.json';
 import Store from './redux/store';
-import Home from './components/home.component';
+import Home from './components/home/home.component';
 import Header from './components/header.component';
-import Results from './components/results.component';
+import Results from './components/results/results.component';
 
 const Stack = createStackNavigator();
 
@@ -18,18 +18,22 @@ const App : React.FC = () => {
     <StoreProvider store={Store}>
       <PaperProvider>
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator
+            headerMode="screen"
+            screenOptions={{
+              header: props => <Header {...props} title={props.scene.descriptor.options.title ?? props.scene.route.name} />
+            }}>
             <Stack.Screen
               name={Routes.Home}
               component={Home}
               options={{
-                header: props => <Header {...props} title={Routes.Home} />
+                title: Routes.Home
               }} />
             <Stack.Screen
               name={Routes.Results}
               component={Results}
               options={{
-                header: props => <Header {...props} title={Routes.Results} />
+                title: Routes.Results
               }} />
           </Stack.Navigator>
         </NavigationContainer>

@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 import { search as SearchActions } from '../actionTypes.json';
 
-interface SearchState {
+export interface SearchState {
     results: SearchResult[]
 }
 

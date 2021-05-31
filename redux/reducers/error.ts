@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 import { error as ErrorActions } from '../actionTypes.json';
 
-interface ErrorState {
+export interface ErrorState {
     message?: string
 }
 
