@@ -1,11 +1,11 @@
 import Axios, { AxiosResponse } from 'axios';
-import { GetFileNameFromUri, GetFileTypeFromUri } from '../util';
+import { GetFileNameFromUri, GetMimeFromUri } from '../util';
 import Constants from 'expo-constants';
 import * as qs from 'querystring';
-import FormData, { AppendOptions } from 'form-data';
+import FormData from 'form-data';
 
 export default class SauceNaoApi {
-    static BaseUri = "https://saucenao.com/search.php";
+    static BaseUri = Constants.manifest.extra!!.sauceNaoBaseUrl + "/search.php";
 
     static DefaultQueryParameters = {
         output_type: 2
@@ -15,7 +15,6 @@ export default class SauceNaoApi {
         let paramObject : any = {
             ...this.DefaultQueryParameters,
             ...parameters,
-            api_key: Constants.manifest.extra?.api_key
         };
         return qs.stringify(paramObject);
     }
@@ -39,7 +38,7 @@ export default class SauceNaoApi {
             formData.append('file', {
                 uri,
                 name: GetFileNameFromUri(uri),
-                type: 'image/' + GetFileTypeFromUri(uri)
+                type: GetMimeFromUri(uri)
             });
 
             const requestUrl = this.BaseUri + '?' + this.GetQueryString();
