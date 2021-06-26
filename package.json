@@ -23,6 +23,7 @@
     "expo-status-bar": "~1.0.4",
     "form-data": "^4.0.0",
     "mime-types": "^2.1.31",
+    "path": "^0.12.7",
     "querystring": "^0.2.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",

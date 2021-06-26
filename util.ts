@@ -1,5 +1,4 @@
 import mime from 'mime-types';
-
 export const GetFileNameFromUri = (uri : string) => {
     return uri.split('/').pop();
 }

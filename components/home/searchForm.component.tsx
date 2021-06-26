@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { Surface, Paragraph, Headline, Button, Text, TextInput, Divider } from 'react-native-paper';
@@ -8,14 +8,25 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { ParamListBase } from '@react-navigation/routers';
 import * as Routes from '../../navigation.json';
 import Loading from '../loading.component';
+import { useNavigation } from '@react-navigation/core';
 
 interface SearchFormProps extends StackScreenProps<ParamListBase,'Home'> {
     search: (uri: string, isFile?: boolean) => Promise<boolean>
 }
 
 const SearchForm : React.FC<SearchFormProps> = (props) => {
+    const nav = useNavigation();
     const [url,setUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    const onFocus = () => {
+        setIsLoading(false);
+    }
+
+    useEffect(() => {
+        const unsubscribe = nav.addListener('focus', onFocus);
+        return () => unsubscribe();
+    }, [props.navigation]);
 
     const launchImagePicker = async () => {
         let permissionStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -32,7 +43,6 @@ const SearchForm : React.FC<SearchFormProps> = (props) => {
             if(await props.search(result.uri, true)) {
                 props.navigation.navigate(Routes.Results);
             }
-            setIsLoading(false);
         }
     }
 
@@ -45,7 +55,6 @@ const SearchForm : React.FC<SearchFormProps> = (props) => {
         if(await props.search(url)) {
             props.navigation.navigate(Routes.Results);
         }
-        setIsLoading(false);
     }
 
     return(
