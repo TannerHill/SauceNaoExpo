@@ -15,9 +15,11 @@ const ErrorReducer = (state : ErrorState = initialState, action : Action) : Erro
     switch(action.type) {
         case ErrorActions.SET_ERROR: {
             return {
-                ...state,
                 message: (action as SetErrorAction).message
             }
+        }
+        case ErrorActions.DISMISS_ERROR: {
+            return {}
         }
         default: return state;
     }

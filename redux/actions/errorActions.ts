@@ -8,3 +8,9 @@ export const setError = (message : string) => (dispatch : Dispatch<SetErrorActio
         message
     });
 }
+
+export const dismissError = () => (dispatch : Dispatch) => {
+    dispatch({
+        type: ErrorActions.DISMISS_ERROR
+    });
+}

@@ -3,6 +3,7 @@ import { StyleSheet, View, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { Surface, Paragraph, Headline, Button, Text, TextInput, Divider } from 'react-native-paper';
 import { search } from '../../redux/actions/searchActions';
+import { setError } from '../../redux/actions/errorActions';
 import * as ImagePicker from 'expo-image-picker';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ParamListBase } from '@react-navigation/routers';
@@ -11,7 +12,8 @@ import Loading from '../loading.component';
 import { useNavigation } from '@react-navigation/core';
 
 interface SearchFormProps extends StackScreenProps<ParamListBase,'Home'> {
-    search: (uri: string, isFile?: boolean) => Promise<boolean>
+    search: (uri: string, isFile: boolean, callback : (success : boolean) => void) => Promise<void>
+    setError: (message : string) => void
 }
 
 const SearchForm : React.FC<SearchFormProps> = (props) => {
@@ -40,21 +42,27 @@ const SearchForm : React.FC<SearchFormProps> = (props) => {
         });
         if(!result.cancelled) {
             setIsLoading(true);
-            if(await props.search(result.uri, true)) {
-                props.navigation.navigate(Routes.Results);
-            }
+            await props.search(result.uri, true, success => {
+                if(success)
+                    props.navigation.navigate(Routes.Results);
+                else 
+                    setIsLoading(false);
+            });
         }
     }
 
     const searchByUrl = async () => {
         if(!url) {
-            Alert.alert('Url Cannot be Empty', 'You must provide a valid, direct image url in order to search.');
+            props.setError('Url cannot be empty.')
             return;
         }
         setIsLoading(true);
-        if(await props.search(url)) {
-            props.navigation.navigate(Routes.Results);
-        }
+        await props.search(url, false, success => {
+            if(success)
+                props.navigation.navigate(Routes.Results);
+            else
+                setIsLoading(false);
+        });
     }
 
     return(
@@ -100,4 +108,4 @@ const formStyles = StyleSheet.create({
     }
 });
 
-export default connect(null, { search })(SearchForm);
+export default connect(null, { search, setError })(SearchForm);

@@ -1,8 +1,9 @@
-import Axios, { AxiosResponse } from 'axios';
+import Axios, { AxiosError, AxiosResponse } from 'axios';
 import { GetFileNameFromUri, GetMimeFromUri } from '../util';
 import Constants from 'expo-constants';
 import * as qs from 'querystring';
 import FormData from 'form-data';
+import { StatusCodes } from 'http-status-codes';
 
 export default class SauceNaoApi {
     static BaseUri = Constants.manifest.extra!!.sauceNaoBaseUrl + "/search.php";
@@ -19,20 +20,33 @@ export default class SauceNaoApi {
         return qs.stringify(paramObject);
     }
 
-    static async SearchByUrl(url : string) : Promise<SearchResponse|null> {
+    static ParseError(e : Error) {
+        const axiosError = e as AxiosError;
+        if(axiosError.isAxiosError) {
+            const code = axiosError.code ?? axiosError.response?.status;
+            switch(axiosError.response?.status) {
+                case StatusCodes.REQUEST_TOO_LONG:
+                    return 'That file is too large! Try using a compressed version.';
+                case StatusCodes.INTERNAL_SERVER_ERROR:
+                    return 'The servers encountered an error. Please try again later.';
+            }
+        }
+        return 'Something unexpected happened. If this persists, try restarting the app or coming back later.';
+    }
+
+    static async SearchByUrl(url : string) : Promise<SearchResponse|string> {
         try {
             const requestUrl = this.BaseUri + '?' + this.GetQueryString({ url });
             const resp : AxiosResponse<SearchResponse> = await Axios.get(requestUrl);
             if(!resp.data.header.message) {
                 return resp.data;
             }
-            console.log(resp.data.header.message); // TODO: Show as error to user?
+            return resp.data.header.message ?? "Something went wrong!";
         }
-        catch(e) { console.log(e) }
-        return null;
+        catch(e) { return this.ParseError(e); }
     }
 
-    static async SearchByFile(uri : string) : Promise<SearchResponse|null> {
+    static async SearchByFile(uri : string) : Promise<SearchResponse|string> {
         try {
             const formData = new FormData();
             formData.append('file', {
@@ -50,9 +64,8 @@ export default class SauceNaoApi {
             if(!resp.data.header.message) {
                 return resp.data;
             }
-            console.log(resp.data.header.message); // TODO: Show as error to user?
+            return resp.data.header.message ?? "Something went wrong!";
         }
-        catch(e) { console.log('Exception: ' + e); }
-        return null;
+        catch(e) { return this.ParseError(e); }
     }
 }
