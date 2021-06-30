@@ -1,6 +1,6 @@
 ![SauceNao](https://saucenao.com/images/static/banner_large.gif)
 
-### An Expo application using the SauceNao reverse image search API
+#### An Expo application using the SauceNao reverse image search API
 
 This application was developed as a cross-platform tool for quickly and easily searching for the source of a given image.
 
